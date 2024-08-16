@@ -1,0 +1,40 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Load dataset
+data = pd.read_csv('emails.csv')
+
+# Data preprocessing
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(data['email_text'])
+y = data['label']
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train SVM model
+svm_model = SVC()
+svm_model.fit(X_train, y_train)
+
+# Train Random Forest model
+rf_model = RandomForestClassifier()
+rf_model.fit(X_train, y_train)
+
+# Evaluate models
+svm_predictions = svm_model.predict(X_test)
+rf_predictions = rf_model.predict(X_test)
+
+# Metrics
+print("SVM Accuracy:", accuracy_score(y_test, svm_predictions))
+print("SVM Precision:", precision_score(y_test, svm_predictions))
+print("SVM Recall:", recall_score(y_test, svm_predictions))
+print("SVM F1 Score:", f1_score(y_test, svm_predictions))
+
+print("Random Forest Accuracy:", accuracy_score(y_test, rf_predictions))
+print("Random Forest Precision:", precision_score(y_test, rf_predictions))
+print("Random Forest Recall:", recall_score(y_test, rf_predictions))
+print("Random Forest F1 Score:", f1_score(y_test, rf_predictions))
